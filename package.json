@@ -15,7 +15,8 @@
     "@fortawesome/react-native-fontawesome": "^0.2.0",
     "expo": "~36.0.0",
     "native-base": "^2.13.8",
-    "react": "~16.9.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-elements": "^1.2.7",
@@ -29,6 +30,14 @@
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "babel-preset-expo": "~8.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "prettier": "^1.19.1",
     "react-native-reanimated": "^1.4.0"
   },
   "private": true

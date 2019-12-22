@@ -1,21 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text } from 'react-native';
 import { Container, Content } from 'native-base';
 
-import CustomHeader from '@shared-components/CustomHeader/CustomHeader';
+import CustomHeader from '../../shared/customHeader/CustomHeader';
+import Page from '../Page';
 
-class Ranking extends Component {
-    render() {
-        return (
-            <Container>
-                <CustomHeader navigation={this.props.navigation} />
+class Ranking extends Page {
+  render() {
+    return (
+      <Container>
+        <CustomHeader navigation={this.navigation} />
 
-                <Content>
-                    <Text>Ranking works!</Text>
-                </Content>
-            </Container>
-        );
-    }
+        <Content>
+          <Text>Ranking works!</Text>
+        </Content>
+      </Container>
+    );
+  }
 }
 
 export default Ranking;
