@@ -1,19 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
-}
+import Homepage from './components/pages/homepage/Homepage';
+import Ranking from './components/pages/ranking/Ranking';
+import About from './components/pages/about/About';
+import AddPoint from './components/pages/add-point/AddPoint';
+import Sidebar from './components/shared-components/Sidebar/Sidebar';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import { createAppContainer } from 'react-navigation';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
+
+export const MainNavigator = createDrawerNavigator(
+    {
+        Homepage: {
+            screen: Homepage
+        },
+        AddPoint: {
+            screen: AddPoint
+        },
+        Ranking: {
+            screen: Ranking
+        },
+        About: {
+            screen: About
+        }
+    },
+    {
+        contentComponent: navigation => <Sidebar {...navigation} />
+    }
+);
+
+const App = createAppContainer(MainNavigator);
+
+export default App;
