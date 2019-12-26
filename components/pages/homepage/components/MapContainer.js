@@ -13,10 +13,6 @@ class MapContainer extends Component {
   constructor() {
     super();
 
-    // this.index = 0;
-    // this.animation = new Animated.Value(0);
-    // this.handleOnMarkerPress = this.hadleOnMarkerPress.bind(this);
-
     this.state = {
       region: {
         latitude: 0,
@@ -60,34 +56,6 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-    // const { markers, region } = this.state;
-
-    // this.animation.addListener(({ value }) => {
-    //   let index = Math.floor(value / CARD_WIDTH + 0.3);
-    //   if (index >= markers.length) {
-    //     index = markers.length - 1;
-    //   }
-    //   if (index <= 0) {
-    //     index = 0;
-    //   }
-
-    //   clearTimeout(this.regionTimeout);
-    //   this.regionTimeout = setTimeout(() => {
-    //     if (this.index !== index) {
-    //       this.index = index;
-    //       const { coordinate } = markers[index];
-    //       this.map.animateToRegion(
-    //         {
-    //           ...coordinate,
-    //           latitudeDelta: region.latitudeDelta,
-    //           longitudeDelta: region.longitudeDelta,
-    //         },
-    //         350,
-    //       );
-    //     }
-    //   }, 10);
-    // });
-
     this.getLocationAsync();
   }
 
@@ -112,12 +80,6 @@ class MapContainer extends Component {
   recenterMap() {
     console.log('recenter');
   }
-  // hadleOnMarkerPress(marker) {
-  //   const { markers } = this.state;
-  //   const currentIndex = markers.indexOf(marker);
-  //   this.scrollView.getNode().scrollTo(
-  //     { x: currentIndex * (CARD_WIDTH + marginHorizontal * 2) });
-  // }
 
   render() {
     const { region, markers } = this.state;
