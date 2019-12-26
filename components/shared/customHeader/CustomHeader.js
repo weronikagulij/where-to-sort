@@ -1,25 +1,37 @@
 import React from 'react';
 
-import { Text } from 'react-native';
 import { Header } from 'react-native-elements';
 import PropTypes from 'prop-types';
-
+import { BoxShadow } from 'react-native-shadow';
 import {
-  Left, Icon,
+  Icon,
 } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { sizeButtonDefault, buttonDefault } from '../../../shared-styles/Button.style';
+import { shadowButton, shadowButtonSize } from '../../../shared-styles/Shadow.style';
+import { colorPrimary } from '../../../shared-styles/Colors.style';
 
 const CustomHeader = (props) => {
   const { navigation } = props;
   return (
-    <Header>
-      <Left style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Icon
-          name="md-menu"
+    <Header containerStyle={{
+      backgroundColor: 'transparent',
+      borderBottomWidth: 0,
+      paddingLeft: 25,
+    }}
+    >
+      <BoxShadow setting={{ ...shadowButton, ...shadowButtonSize }}>
+        <TouchableOpacity
           onPress={() => navigation.openDrawer()}
-        />
-        <Text>{navigation.state.key}</Text>
-      </Left>
+          style={[buttonDefault, sizeButtonDefault]}
+        >
+          <Icon
+            style={colorPrimary}
+            name="md-menu"
+          />
+        </TouchableOpacity>
+      </BoxShadow>
     </Header>
   );
 };

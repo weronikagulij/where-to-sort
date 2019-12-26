@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { Container, Content } from 'native-base';
 
 import CustomHeader from '../../shared/customHeader/CustomHeader';
 import Page from '../Page';
+import SelectOption from './components/SelectOption';
+import MapContainer from './components/MapContainer';
 
 class Homepage extends Page {
   render() {
@@ -11,8 +12,14 @@ class Homepage extends Page {
       <Container>
         <CustomHeader navigation={this.navigation} />
 
-        <Content>
-          <Text>Homepage works!</Text>
+        <SelectOption />
+
+        <Content style={{
+          position: 'absolute',
+          zIndex: -1,
+        }}
+        >
+          <MapContainer />
         </Content>
       </Container>
     );
