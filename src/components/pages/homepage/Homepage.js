@@ -1,10 +1,12 @@
 import React from 'react';
 import { Container, Content } from 'native-base';
+import { useDispatch, useSelector, connect } from 'react-redux';
 
 import CustomHeader from '../../shared/customHeader/CustomHeader';
 import Page from '../Page';
 import SelectOption from './components/SelectOption';
 import MapContainer from './components/MapContainer';
+import { registerMap } from '../../../redux/actions';
 
 class Homepage extends Page {
   render() {
@@ -26,4 +28,10 @@ class Homepage extends Page {
   }
 }
 
-export default Homepage;
+
+const mapStateToProps = (state) => ({
+  map: state.map,
+  loggedUser: state.loggedUser,
+});
+
+export default (Homepage);

@@ -3,9 +3,11 @@ import {
   Text, View, Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector, connect } from 'react-redux';
 
 import { mapStyle } from '../Homepage.style';
 import { marginHorizontal, CARD_WIDTH } from '../Homepage.variables';
+import { registerScrollView } from '../../../../redux/actions';
 
 // to do: export scrollView to redux
 
@@ -15,11 +17,13 @@ class AnimatedScrollView extends Component {
     this.index = 0;
     this.animation = new Animated.Value(0);
 
-    this.map = null; // to do: import map from redux
+    this.handleRegisterScrollView = this.handleRegisterScrollView.bind(this);
   }
 
   componentDidMount() {
     const { markers, region } = this.props;
+    // this.map = map;
+    // console.log(this.props.map.scrollView);
 
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3);
@@ -48,12 +52,22 @@ class AnimatedScrollView extends Component {
     });
   }
 
+  handleRegisterScrollView(view) {
+    // this.props.registerMap(map);
+    // console.log('dsdsdsd', this.props.map.scrollView);
+    if (this.props.map.scrollView === null) this.props.registerScrollView({ ...this.props.map, scrollView: view });
+
+    this.scrollView = view;
+    this.map = this.props.map.map;
+    // console.log(this.props.map.);
+  }
+
   render() {
     const { markers } = this.props;
     return (
       <Animated.ScrollView
         horizontal
-        ref={(view) => { this.scrollView = view; }}
+        ref={(view) => this.handleRegisterScrollView(view)}
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + marginHorizontal * 2}
@@ -88,9 +102,16 @@ class AnimatedScrollView extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  map: state.map,
+  // scrollView: state.scrollView,
+  // loggedUser: state.loggedUser,
+});
+
 AnimatedScrollView.propTypes = {
   region: PropTypes.objectOf(PropTypes.any).isRequired,
-  markers: PropTypes.objectOf(PropTypes.any).isRequired,
+  markers: PropTypes.arrayOf(PropTypes.any).isRequired,
+  map: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
-export default AnimatedScrollView;
+export default connect(mapStateToProps, { registerScrollView })(AnimatedScrollView);

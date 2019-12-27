@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { useDispatch, useSelector, connect } from 'react-redux';
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -57,6 +58,7 @@ class MapContainer extends Component {
 
   componentDidMount() {
     this.getLocationAsync();
+    // console.log(this.props.map);
   }
 
   async getLocationAsync() {
@@ -79,6 +81,13 @@ class MapContainer extends Component {
 
   recenterMap() {
     console.log('recenter');
+    // const { latitude, longitude, latitudeDelta, longitudeDelta } = this.state.location;
+    // this.map.animateToRegion({
+    //   latitude,
+    //   longitude,
+    //   latitudeDelta,
+    //   longitudeDelta
+    // })
   }
 
   render() {
@@ -96,4 +105,10 @@ class MapContainer extends Component {
   }
 }
 
-export default MapContainer;
+const mapStateToProps = (state) => ({
+  map: state.map,
+  scrollView: state.scrollView,
+});
+
+
+export default connect(mapStateToProps)(MapContainer);
