@@ -3,27 +3,26 @@ import {
   Text, View, Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import { mapStyle } from '../Homepage.style';
 import { marginHorizontal, CARD_WIDTH } from '../Homepage.variables';
-import { registerScrollView } from '../../../../redux/actions';
 
 class AnimatedScrollView extends Component {
   constructor() {
     super();
     this.index = 0;
     this.animation = new Animated.Value(0);
-    this.scrollView = React.createRef();
-
-    // this.handleRegisterScrollView = this.handleRegisterScrollView.bind(this);
   }
 
   componentDidMount() {
     const { markers, emitter, region } = this.props;
 
     emitter.on('scroll-scrollview-to', this.scrollTo, this);
+    this.setupScrollViewAnimation();
+  }
 
+  setupScrollViewAnimation() {
+    const { markers, emitter, region } = this.props;
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3);
       if (index >= markers.length) {
@@ -43,37 +42,14 @@ class AnimatedScrollView extends Component {
             latitudeDelta: region.latitudeDelta,
             longitudeDelta: region.longitudeDelta,
           });
-          // this.props.triggerAnimateTo();
-          // console.log(map.map);
-          // if (map.map) {
-          //   map.map.animateToRegion(
-          //     {
-          //       ...coordinate,
-          //       latitudeDelta: region.latitudeDelta,
-          //       longitudeDelta: region.longitudeDelta,
-          //     },
-          //     350,
-          //   );
-          // }
         }
       }, 10);
     });
   }
 
   scrollTo(index) {
-    // console.log('kupsko');
     this.scrollView.getNode().scrollTo({ x: index * (CARD_WIDTH + marginHorizontal * 2) });
   }
-
-  // handleRegisterScrollView(view) {
-  //   // const { map } = this.props;
-  //   // if (map.scrollView === null) {
-  //   //   this.props.registerScrollView({ ...map, scrollView: view });
-
-  //   this.scrollView = view;
-  //   // this.map = map.map;
-  //   // }
-  // }
 
   render() {
     const { markers } = this.props;
@@ -122,7 +98,7 @@ class AnimatedScrollView extends Component {
 AnimatedScrollView.propTypes = {
   region: PropTypes.objectOf(PropTypes.any).isRequired,
   markers: PropTypes.arrayOf(PropTypes.any).isRequired,
-  // map: PropTypes.objectOf(PropTypes.any).isRequired,
+  emitter: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default
