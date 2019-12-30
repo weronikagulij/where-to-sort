@@ -14,12 +14,15 @@ class AnimatedScrollView extends Component {
     super();
     this.index = 0;
     this.animation = new Animated.Value(0);
+    this.scrollView = React.createRef();
 
-    this.handleRegisterScrollView = this.handleRegisterScrollView.bind(this);
+    // this.handleRegisterScrollView = this.handleRegisterScrollView.bind(this);
   }
 
   componentDidMount() {
-    const { markers, region } = this.props;
+    const { markers, emitter, region } = this.props;
+
+    emitter.on('scroll-scrollview-to', this.scrollTo, this);
 
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3);
@@ -35,33 +38,49 @@ class AnimatedScrollView extends Component {
         if (this.index !== index) {
           this.index = index;
           const { coordinate } = markers[index];
-          this.map.animateToRegion(
-            {
-              ...coordinate,
-              latitudeDelta: region.latitudeDelta,
-              longitudeDelta: region.longitudeDelta,
-            },
-            350,
-          );
+          emitter.emit('animate-map-to', {
+            ...coordinate,
+            latitudeDelta: region.latitudeDelta,
+            longitudeDelta: region.longitudeDelta,
+          });
+          // this.props.triggerAnimateTo();
+          // console.log(map.map);
+          // if (map.map) {
+          //   map.map.animateToRegion(
+          //     {
+          //       ...coordinate,
+          //       latitudeDelta: region.latitudeDelta,
+          //       longitudeDelta: region.longitudeDelta,
+          //     },
+          //     350,
+          //   );
+          // }
         }
       }, 10);
     });
   }
 
-  handleRegisterScrollView(view) {
-    const { map } = this.props;
-    if (map.scrollView === null) this.props.registerScrollView({ ...map, scrollView: view });
-
-    this.scrollView = view;
-    this.map = map.map;
+  scrollTo(index) {
+    // console.log('kupsko');
+    this.scrollView.getNode().scrollTo({ x: index * (CARD_WIDTH + marginHorizontal * 2) });
   }
+
+  // handleRegisterScrollView(view) {
+  //   // const { map } = this.props;
+  //   // if (map.scrollView === null) {
+  //   //   this.props.registerScrollView({ ...map, scrollView: view });
+
+  //   this.scrollView = view;
+  //   // this.map = map.map;
+  //   // }
+  // }
 
   render() {
     const { markers } = this.props;
     return (
       <Animated.ScrollView
         horizontal
-        ref={(view) => this.handleRegisterScrollView(view)}
+        ref={(view) => { this.scrollView = view; }}
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + marginHorizontal * 2}
@@ -96,14 +115,17 @@ class AnimatedScrollView extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  map: state.map,
-});
+// const mapStateToProps = (state) => ({
+//   map: state.map,
+// });
 
 AnimatedScrollView.propTypes = {
   region: PropTypes.objectOf(PropTypes.any).isRequired,
   markers: PropTypes.arrayOf(PropTypes.any).isRequired,
-  map: PropTypes.objectOf(PropTypes.any).isRequired,
+  // map: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
-export default connect(mapStateToProps, { registerScrollView })(AnimatedScrollView);
+export default
+// connect(mapStateToProps, { registerScrollView }, null, { forwardRef: true })(
+AnimatedScrollView;
+// );

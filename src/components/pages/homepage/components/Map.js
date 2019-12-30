@@ -13,22 +13,36 @@ class Map extends Component {
     super();
 
     this.handleOnMarkerPress = this.hadleOnMarkerPress.bind(this);
-    this.handleRegisterMap = this.handleRegisterMap.bind(this);
-    this.scrollView = null;
+    // this.handleRegisterMap = this.handleRegisterMap.bind(this);
+    // this.scrollView = null;
+  }
+
+  componentDidMount() {
+    // console.log(this.props);
+    this.props.emitter.on('animate-map-to', this.animateTo, this);
   }
 
   hadleOnMarkerPress(marker) {
     const { markers } = this.props;
     const currentIndex = markers.indexOf(marker);
-    this.scrollView.getNode().scrollTo({ x: currentIndex * (CARD_WIDTH + marginHorizontal * 2) });
+    // if (map.scrollView) map.scrollView.getNode().scrollTo({ x: currentIndex * (CARD_WIDTH + marginHorizontal * 2) });
+    this.props.emitter.emit('scroll-scrollview-to', currentIndex);
+    // to do: interact with scrollview
   }
 
-  handleRegisterMap(mapView) {
-    const { map } = this.props;
-    if (map.map === null) this.props.registerMap({ ...map, mapView });
+  // handleRegisterMap(mapView) {
+  //   // const { map } = this.props;
+  //   // if (map.map === null) {
+  //   //   this.props.registerMap({ ...map, map: mapView });
 
-    this.map = mapView;
-    this.scrollView = map.scrollView;
+  //   this.map = mapView;
+  //   // }
+  // }
+
+  animateTo(coordinates) {
+    // console.log('animate to!', this.map);
+    // const { region } = this.props;
+    this.map.animateToRegion(coordinates, 350);
   }
 
   render() {
@@ -36,7 +50,7 @@ class Map extends Component {
 
     return (
       <MapView
-        ref={(map) => this.handleRegisterMap(map)}
+        ref={(map) => { this.map = map; }}
         style={mapStyle.mapStyle}
         initialRegion={region}
         region={region}
@@ -62,14 +76,18 @@ class Map extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  map: state.map,
-});
+// const mapStateToProps = (state) => ({
+//   map: state.map,
+// });
 
 Map.propTypes = {
   region: PropTypes.objectOf(PropTypes.any).isRequired,
   markers: PropTypes.arrayOf(PropTypes.any).isRequired,
-  map: PropTypes.objectOf(PropTypes.any).isRequired,
+  // map: PropTypes.objectOf(PropTypes.any).isRequired,
+  // registerMap: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, { registerMap })(Map);
+export default
+// connect(mapStateToProps, { registerMap }, null, { forwardRef: true })(
+Map;
+// );

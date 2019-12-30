@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector, connect } from 'react-redux';
+import Emitter from 'tiny-emitter';
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -14,6 +15,7 @@ class MapContainer extends Component {
   constructor() {
     super();
 
+    this.emitter = new Emitter();
     this.state = {
       region: {
         latitude: 0,
@@ -24,31 +26,31 @@ class MapContainer extends Component {
       markers: [
         {
           coordinate: {
-            latitude: 52.4385809,
-            longitude: 16.8337559,
+            latitude: 52.404563,
+            longitude: 16.934996,
           },
-          title: 'Best Place',
-          description: 'This is the best place in Portland',
+          title: 'Zielona 2, Poznań',
+          description: 'Zbiór nakrętek na cele charytatywne',
           id: 1,
           verified: true,
         },
         {
           coordinate: {
-            latitude: 52.4385809,
-            longitude: 16.8637559,
+            latitude: 52.406503,
+            longitude: 16.937811,
           },
-          title: 'Second Best Place',
-          description: 'This is the second best place in Portland',
+          title: 'Garbary 28, Poznań',
+          description: 'Punkt zbioru baterii',
           id: 2,
           verified: true,
         },
         {
           coordinate: {
-            latitude: 52.4485809,
-            longitude: 16.8337559,
+            latitude: 52.405720,
+            longitude: 16.938725,
           },
-          title: 'Third Best Place',
-          description: 'This is the third best place in Portland',
+          title: 'Mostowa 7, Poznań',
+          description: 'Punkt zbioru urządzeń elektrycznych',
           id: 3,
           verified: false,
         },
@@ -95,10 +97,10 @@ class MapContainer extends Component {
 
     return (
       <View style={mapStyle.container}>
-        <Map region={region} markers={markers} />
+        <Map region={region} markers={markers} emitter={this.emitter} />
         <View style={mapStyle.scrollAndButtonsWrapper}>
           <LocalizeButton locate={this.recenterMap} />
-          <AnimatedScrollView region={region} markers={markers} />
+          <AnimatedScrollView region={region} markers={markers} emitter={this.emitter} />
         </View>
       </View>
     );
