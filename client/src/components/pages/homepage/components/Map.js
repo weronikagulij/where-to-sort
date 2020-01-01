@@ -15,6 +15,7 @@ class Map extends Component {
     const { emitter } = this.props;
 
     emitter.on('animate-map-to', this.animateTo, this);
+    // emitter.on('recenter-map', this.recenterMap, this);
   }
 
   hadleOnMarkerPress(marker) {
@@ -26,6 +27,19 @@ class Map extends Component {
 
   animateTo(coordinates) {
     this.map.animateToRegion(coordinates, 350);
+  }
+
+  recenterMap() {
+    console.log('recenter');
+    // const {
+    //   latitude, longitude, latitudeDelta, longitudeDelta,
+    // } = this.state.location;
+    // this.map.animateToRegion({
+    //   latitude,
+    //   longitude,
+    //   latitudeDelta,
+    //   longitudeDelta,
+    // });
   }
 
   render() {

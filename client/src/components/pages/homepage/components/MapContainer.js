@@ -99,7 +99,7 @@ class MapContainer extends Component {
       <View style={mapStyle.container}>
         <Map region={region} markers={markers} emitter={this.emitter} />
         <View style={mapStyle.scrollAndButtonsWrapper}>
-          <LocalizeButton locate={this.recenterMap} />
+          <LocalizeButton locate={this.recenterMap} emitter={this.emitter} />
           <AnimatedScrollView region={region} markers={markers} emitter={this.emitter} />
         </View>
       </View>

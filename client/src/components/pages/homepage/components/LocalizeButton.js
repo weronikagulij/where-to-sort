@@ -18,7 +18,7 @@ class LocalizeButton extends Component {
   }
 
   handleGeolocationButton() {
-    this.props.locate();
+    // this.props.emitter.emit('recenter-map');
   }
 
   render() {
