@@ -5,9 +5,11 @@ require('dotenv/config');
 
 const app = express();
 const userRoute = require('./routes/user');
+const pointRoute = require('./routes/point');
 const db = mongoose.connection;
 
 app.use(bodyParser.json());
+app.use('/point', pointRoute);
 app.use('/user', userRoute);
 
 app.get('/', (req, res) => {
