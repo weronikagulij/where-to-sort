@@ -4,11 +4,11 @@ const bodyParser = require('body-parser');
 require('dotenv/config');
 
 const app = express();
-const postsRoute = require('./routes/posts');
+const userRoute = require('./routes/user');
 const db = mongoose.connection;
 
 app.use(bodyParser.json());
-app.use('/posts', postsRoute);
+app.use('/user', userRoute);
 
 app.get('/', (req, res) => {
     res.send('we are on homeee');
@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
 
 mongoose.connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 });
 
 db.on('error', console.error.bind(console, 'connection error:'));
