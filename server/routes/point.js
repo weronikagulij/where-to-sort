@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Point = require('../models/Point');
 
-// get all points
+const getLatLongDiff = require('../utils/utils');
+
+// get all points with details
 router.get('/', async (req, res) => {
     try {
         const points = await Point.find();
@@ -11,6 +13,37 @@ router.get('/', async (req, res) => {
         res.json({ message: err });
     }
 });
+
+// get points in :range meters
+router.get(
+    '/findInRange/:latitude/:longitude/:rangeMeters/:type?',
+    async (req, res) => {
+        try {
+            let { latitude, longitude, rangeMeters, type } = req.params;
+            let { lat, long, lat_diff, long_diff } = getLatLongDiff(
+                latitude,
+                longitude,
+                rangeMeters
+            );
+
+            let condition =
+                type == null ? Point.schema.paths.pointType.enumValues : [type];
+
+            const points = await Point.find({
+                latitude: { $gte: lat - lat_diff, $lte: lat + lat_diff },
+                longitude: {
+                    $gte: long - long_diff,
+                    $lte: long + long_diff
+                },
+                pointType: { $in: condition }
+            });
+
+            res.json(points);
+        } catch (err) {
+            res.json({ message: err });
+        }
+    }
+);
 
 // get specific point with details
 router.get('/:id', async (req, res) => {
