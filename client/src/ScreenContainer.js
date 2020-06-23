@@ -9,9 +9,13 @@ import Ranking from './components/pages/ranking/Ranking';
 import About from './components/pages/about/About';
 import AddPoint from './components/pages/add-point/AddPoint';
 import Sidebar from './components/shared/sidebar/Sidebar';
+import Login from './components/pages/login/Login';
 
 export const MainNavigator = createDrawerNavigator(
   {
+    Login: {
+      screen: Login,
+    },
     Homepage: {
       screen: Homepage,
     },
