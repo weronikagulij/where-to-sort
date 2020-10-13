@@ -6,7 +6,7 @@ import CustomHeader from '../../shared/customHeader/CustomHeader';
 import Page from '../Page';
 import SelectOption from './components/SelectOption';
 import MapContainer from './components/MapContainer';
-import { registerMap } from '../../../redux/actions';
+import { registerMap } from '../../../redux/actions/userActions';
 
 class Homepage extends Page {
   render() {

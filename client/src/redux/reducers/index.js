@@ -1,15 +1,9 @@
 
 import { combineReducers } from 'redux';
-
-// import { mapReducer, scrollViewReducer, locationReducer } from './mapReducer';
-import mapReducer from './mapReducer';
-import loggedUserReducer from './loggedUserReducer';
+import userReducer from './userReducer';
 
 const reducers = combineReducers({
-  map: mapReducer,
-  loggedUser: loggedUserReducer,
-//   scrollView: scrollViewReducer,
-//   location: locationReducer,
+  user: userReducer
 });
 
 export default reducers;
