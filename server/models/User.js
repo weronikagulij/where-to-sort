@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
     bcrypt = require('bcryptjs'),
-    SALT_WORK_FACTOR = 10;
+    SALT_WORK_FACTOR = 10,
+    jwt = require('jsonwebtoken');
 
 const UserSchema = mongoose.Schema({
     email: {
@@ -39,33 +40,68 @@ const UserSchema = mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default: false
+    },
+    token: {
+        type: String
     }
 });
 
 UserSchema.pre('save', function(next) {
     var user = this;
 
-    // only hash the password if it has been modified (or is new)
+    /**
+     * Hash password
+     */
     if (!user.isModified('password')) return next();
-    // generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-        if (err) return next(err);
+        if (err) {
+            return next(err);
+        }
 
-        // hash the password using our new salt
         bcrypt.hash(user.password, salt, (err, hash) => {
-            if (err) return next(err);
+            if (err) {
+                return next(err);
+            }
 
-            // override the cleartext password with the hashed one
             user.password = hash;
             next();
         });
     });
 });
 
-UserSchema.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) return cb(err);
+UserSchema.methods.comparePassword = (candidatePassword, cb) => {
+    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+        if (err) {
+            return cb(err);
+        }
+
         cb(null, isMatch);
+    });
+};
+
+UserSchema.methods.generateToken = (cb) => {
+    var user = this;
+    var token = jwt.sign(user._id.toHexString(), process.env.SECRET);
+    user.token = token;
+    user.save((err,user) => {
+        if (err) {
+            return cb(err);
+        }
+
+        cb(null, user);
+    })
+};
+
+UserSchema.statics.findByToken = (token,cb) => {
+    var user = this;
+    jwt.verify(token,process.env.SECRET, (err, decode) => {
+        user.findOne({"_id":decode, "token":token}, (err,user) => {
+            if (err) {
+                return cb(err);
+            }
+
+            cb(null,user);
+        });
     });
 };
 
