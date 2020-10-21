@@ -46,51 +46,76 @@ const UserSchema = mongoose.Schema({
     }
 });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', async function(next) {
     var user = this;
 
     /**
      * Hash password
      */
     if (!user.isModified('password')) return next();
-    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-        if (err) {
-            return next(err);
-        }
+    try {
+        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+        this.password = await bcrypt.hash(this.password, salt);
+        return next();
+    } catch (err) {
+        return next(err);
+    }
+    // bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+    //     if (err) {
+    //         return next(err);
+    //     }
 
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            if (err) {
-                return next(err);
-            }
+    //     bcrypt.hash(user.password, salt, (err, hash) => {
+    //         if (err) {
+    //             return next(err);
+    //         }
 
-            user.password = hash;
-            next();
-        });
-    });
+    //         user.password = hash;
+    //         next();
+    //     });
+    // });
 });
 
-UserSchema.methods.comparePassword = (candidatePassword, cb) => {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-        if (err) {
-            return cb(err);
-        }
+// UserSchema.methods.comparePassword = (candidatePassword, cb) => {
+//     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+//         if (err) {
+//             return cb(err);
+//         }
 
-        cb(null, isMatch);
-    });
+//         cb(null, isMatch);
+//     });
+// };
+
+UserSchema.methods.comparePassword = async function comparePassword(data) {
+    return bcrypt.compare(data, this.password);
 };
 
-UserSchema.methods.generateToken = (cb) => {
-    var user = this;
-    var token = jwt.sign(user._id.toHexString(), process.env.SECRET);
+UserSchema.methods.generateToken = async function() {
+    const user = this;
+    const token = await jwt.sign( user._id.toHexString(), process.env.TOKEN_HASH);
     user.token = token;
-    user.save((err,user) => {
-        if (err) {
-            return cb(err);
-        }
+    user.update({ token: token })
 
-        cb(null, user);
-    })
+    // console.log('ccc',u2);
+    // return userSaved = UserSchema.methods.findOneAndUpdate(
+    //     { _id : req.user._id },
+    //     { token: token }
+    // )
+    return user;
 };
+
+// UserSchema.methods.generateToken = (cb) => {
+//     var user = this;
+//     var token = jwt.sign(user._id.toHexString(), process.env.SECRET);
+//     user.token = token;
+//     user.save((err,user) => {
+//         if (err) {
+//             return cb(err);
+//         }
+
+//         cb(null, user);
+//     })
+// };
 
 UserSchema.statics.findByToken = (token,cb) => {
     var user = this;

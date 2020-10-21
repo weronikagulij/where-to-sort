@@ -1,36 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-
-// let auth = (req,res,next)=>{
-//     // let token = req.cookies.ths_auth;​
-//     User.findByToken(token,(err,user)=>{
-//         if (err) {
-//             throw err;
-//         }
-
-//         if (!user) {
-//             return res.json({
-//             message: 'User not authenticated',
-//             error : true
-//             });
-//         }
-
-//         // req.token = token;
-//         req.user = user;
-//         next();
-//     });​
-// }
+const { auth } = require('../middleware/auth'); 
 
 /**
  * get all users
  */ 
 router.get('/', async (req, res) => {
     try {
+        console.log('10')
         const users = await User.find();
+        console.log('11')
         res.json(users);
     } catch (err) {
         res.json({ message: err });
+    }
+});
+
+/**
+ * Authorizate user
+ */
+router.get('/auth', auth, async (req, res) => {
+    try {
+        res.json(req.user);
+    } catch (e) {
+        res.json({ message: e });
     }
 });
 
@@ -84,37 +78,25 @@ router.post('/add', async (req, res) => {
 /**
  * Login user
  */
-router.post('/users/login', (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-        if (!user) {
-            return res.json({ message: err })
-        }
-        
-        user.comparePassword(req.body.password, (err, isMatch) => {
-            if (!isMatch) {
-                return res.json({ message: err });
+router.post('/login', async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+
+        if ( user ) {
+            const isUser = await user.comparePassword(req.body.password);
+            if ( isUser ) {
+                const userWithToken = await user.generateToken();
+                return res.json(userWithToken); 
+            } else {
+                return res.json({ message: 'Password is incorrect' });  
             }
-            
-            user.generateToken((err, user2) => {
-                if (err) {
-                    return res.status(400).send(err);
-                }
+        } else {
+            return res.json({ message: 'User with given email not found' }); 
+        }
+    } catch (e) {
 
-                res.cookie('ths_auth', user2.token).status(200).json({"Login Success":"True"});
-            })
-        });
-    });
+    }
 });
-
-/**
- * Authenticate user
- */
-router.get("/auth", (req,res) => {
-    res.json({
-        user : req.user
-    })
-});
-
 
 /**
  * Logout user
@@ -122,8 +104,8 @@ router.get("/auth", (req,res) => {
 router.post('/users/logout', async (req, res) => {
     try {
         const user = User.findOneAndUpdate(
-            { _id : req.user._id, token: req.cookies.ths_auth },
-            { token:'' }
+            { _id: req.user._id, token: req.cookies.ths_auth },
+            { token: '' }
         );
         res.json(user);
     } catch (e) {
