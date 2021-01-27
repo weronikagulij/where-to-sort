@@ -6,6 +6,22 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import PropTypes from 'prop-types';
 
 class WhTextInput extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: ''
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(text) {
+    console.log(text)
+    this.setState({value: text});
+    // this.setState({value: event.target.value})
+  }
+
   render() {
     const { label, password } = this.props;
 
@@ -16,6 +32,8 @@ class WhTextInput extends Component {
           placeholder={label}
           defaultValue=''
           secureTextEntry={password}
+          value={this.state.value}
+          onChangeText={(text) => this.handleChange(text)}
         />
       </View>
     );

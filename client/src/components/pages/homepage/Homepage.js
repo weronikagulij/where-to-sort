@@ -28,10 +28,4 @@ class Homepage extends Page {
   }
 }
 
-
-const mapStateToProps = (state) => ({
-  map: state.map,
-  loggedUser: state.loggedUser,
-});
-
 export default (Homepage);

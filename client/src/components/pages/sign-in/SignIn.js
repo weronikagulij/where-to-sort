@@ -9,19 +9,51 @@ import { buttonBordered, buttonBorderedText, buttonFilled, buttonFilledText } fr
 import WhTextInput from '../../shared/forms/wh-text-input/WhTextInput';
 import WhText from '../../shared/wh-text/WhText';
 import { login } from '../../../api/mock';
+import { connect } from 'react-redux';
+import { continueWithoutLogin } from '../../../redux/actions/userActions';
 
 class SignIn extends Page {
+  constructor(navigation) {
+    super(navigation);
+
+    this.state = {
+      loginForm: {
+        email: '',
+        password: ''
+      }
+    }
+
+    this.continueWithoutLoggingIn = this.continueWithoutLoggingIn.bind(this);
+    this.changeEmail = this.changeEmail.bind(this);
+    this.changePassword = this.changePassword.bind(this);
+  }
+
   loginUser() {
-    login('test@test.ca', 'password')
-      // .then(async (res) => {
-      //   await setToken(res.auth_token);
-      //   navigation.navigate('Homepage');
-      // })
-      .then((res) => {
-        // await setToken(res.auth_token);
-        navigation.navigate('Homepage');
-      })
-      .catch((err) => console.log('error:', err.message));
+    // login('test@test.ca', 'password')
+    //   // .then(async (res) => {
+    //   //   await setToken(res.auth_token);
+    //   //   navigation.navigate('Homepage');
+    //   // })
+    //   .then((res) => {
+    //     // this.props.saveUser()
+    //     // await setToken(res.auth_token);
+    //     // navigation.navigate('Homepage');
+    //   })
+    //   .catch((err) => console.log('error:', err.message));
+  }
+
+  changeEmail() {
+    console.log('email changed')
+  }
+
+  changePassword() {
+
+  }
+
+  continueWithoutLoggingIn() {
+    console.log('continue')
+    this.props.continueWithoutLoggingIn();
+    this.props.navigation.navigate('Homepage');
   }
 
   render() {
@@ -38,10 +70,18 @@ class SignIn extends Page {
 
           <View style={{}}>
             <View style={{paddingBottom: 24}}>
-              <WhTextInput label="E-mail"/>
+              <WhTextInput
+                label="E-mail"
+                // value={this.state.loginForm.email}
+                // onChange={this.changeEmail}
+              />
             </View>
             <View style={{paddingBottom: 32}}>
-              <WhTextInput label="Hasło" password={true}/>
+              <WhTextInput
+                label="Hasło"
+                password={true}
+                // value={this.state.loginForm.password}
+              />
             </View>
             <View style={{}}>
               <TouchableOpacity
@@ -53,7 +93,7 @@ class SignIn extends Page {
             </View>
           </View>
 
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Welcome')} style={{flexDirection: 'row', alignItems: 'center', paddingTop: 32, justifyContent: 'center'}}>
+          <TouchableOpacity onPress={() => this.continueWithoutLoggingIn()} style={{flexDirection: 'row', alignItems: 'center', paddingTop: 32, justifyContent: 'center'}}>
             <WhText style={{marginRight: 10, fontSize: 15}}>Kontynuuj bez logowania</WhText>
             <Icon name="arrow-forward" style={{fontSize: 15}}/>
           </TouchableOpacity>
@@ -74,4 +114,15 @@ class SignIn extends Page {
   }
 }
 
-export default (SignIn);
+const mapStateToProps = (state) => ({
+  user: state.user
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveUser: value => { dispatch(signInUser(value)); },
+    continueWithoutLoggingIn: () => { dispatch(continueWithoutLogin()); }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
